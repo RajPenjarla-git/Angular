@@ -1,1 +1,47 @@
 ## Component code
+
+import { Component, OnInit } from '@angular/core';
+import { forkJoin } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+
+@Component({
+  selector: 'app-demo',
+  templateUrl: './demo.component.html',
+  styleUrls: ['./demo.component.css']
+})
+export class DemoComponent implements OnInit {
+  _url1="https://swapi.co/api/people/1/";
+  _url2="https://swapi.co/api/planets/1/";
+  
+  loadedResult:{};
+  loadResult1:{};
+  loadResult2:{};
+  
+  constructor(private http: HttpClient) { }
+  
+  ngOnInit() {
+  
+    let url1result = this.http.get(this._url1);
+    let url2result = this.http.get(this._url2);
+    
+     forkJoin([url1result, url2result]).subscribe(demo => {
+      this.loadedResult = demo; // both the results
+      this.loadResult1 = demo[0];  // URL1 result
+      this.loadResult2 = demo[1];  // URL2 result
+              
+   });
+    
+ }
+ 
+ ## HTML
+ 
+     <h1>Multiple services result</h1>
+     {{loadedResult | json}}
+     
+     <h1>URL1 services result</h1>
+     {{loadResult1 | json}}
+     
+      <h1>URL2 services result</h1>
+      {{loadResult2 | json}}
+      
+      
